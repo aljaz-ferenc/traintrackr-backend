@@ -14,16 +14,35 @@ export async function OPTIONS() {
 
 
 export async function DELETE(request: NextRequest, {params}: {params: Promise<{mesoId: string}>}){
-
     try{
         const {mesoId} = await params
-        if(!mesoId) throw new Error('No mesoId')
-
         const deletedMeso = await MesocycleModel.findByIdAndDelete(mesoId)
-        if(!deletedMeso) throw new Error('Coudn not delete mesocycle')
 
-        return NextResponse.json({}, {status: 204})
+        return NextResponse.json({}, {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+            status: 200
+        })
     }catch(err){
+        console.log(err)
+        return NextResponse.json({error: 'No mesoId'}, {status: 404})
+    }
+}
+
+export async function GET(request: NextRequest, {params}: {params: Promise<{mesoId: string}>}){
+    try{
+        const {mesoId} = await params
+        const mesocycle = await MesocycleModel.findById(mesoId)
+
+        return NextResponse.json({mesocycle}, {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+            status: 200
+        })
+    }catch(err){
+        console.log(err)
         return NextResponse.json({error: 'No mesoId'}, {status: 404})
     }
 }
