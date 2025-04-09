@@ -17,6 +17,10 @@ const mesocycleSchema = new mongoose.Schema({
         enum: ['synchronized' ,'asynchronized'],
         required: ['required']
     },
+    workouts: {
+      type: Array,
+      required: ['required']
+    },
     createdBy: {
         //TODO: ObjectId
         type: String,

@@ -15,11 +15,22 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-    return NextResponse.json({message: "mesocycles"}, {
+    try{
+        await connectToDatabase()
+
+        const mesocycles = await MesocycleModel.find()
+
+    return NextResponse.json({ mesocycles}, {
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
     });
+    }catch(error){
+        return NextResponse.json(
+            {message: 'Error getting mesocycles'},
+            {status: 500}
+        )
+    }
 }
 
 export async function POST(request: Request) {
