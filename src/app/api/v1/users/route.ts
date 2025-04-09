@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
-import MesocycleModel from "@/database/models/Mesocycle.model";
+import UserModel from "@/database/models/User.model";
 
 // Allow CORS for every request
 export async function OPTIONS() {
@@ -14,49 +14,32 @@ export async function OPTIONS() {
     });
 }
 
-export async function GET() {
-    try {
-        await connectToDatabase()
-        const mesocycles = await MesocycleModel.find()
-
-        return NextResponse.json({mesocycles}, {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-        });
-    } catch (error) {
-        return NextResponse.json(
-            {message: 'Error getting mesocycles'},
-            {status: 500}
-        )
-    }
-}
-
 export async function POST(request: Request) {
+    const user = await request.json()
+    console.log(user)
+
     try {
         await connectToDatabase();
-
-        const newMesocycle = await request.json();
-        const createdMesocycle = await MesocycleModel.create(newMesocycle);
+        const createdUser = await UserModel.create(user);
 
         return NextResponse.json(
-            {data: createdMesocycle},
+            {data: createdUser},
             {
                 status: 201,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", // CORS fix
+                    "Access-Control-Allow-Origin": "*",
                 },
             }
         );
     } catch (error) {
-        console.error("Error creating mesocycle:", error);
+        console.error("Error creating user:", error);
 
         return NextResponse.json(
             {message: "Internal Server Error"},
             {
                 status: 500,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", // ✅ Also add here!
+                    "Access-Control-Allow-Origin": "*",
                 },
             }
         );
