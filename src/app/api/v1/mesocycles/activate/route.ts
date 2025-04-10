@@ -18,6 +18,7 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
     try {
+        await MesocycleModel
         const body = await request.json();
         const {clerkId, activeMesocycle} = body;
         console.log("CLERK_ID: ", clerkId)
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
         const createEmptyWeeks = (length: number) => new Array(length).fill({});
         const initialWorkoutLog = {
             mesoTitle: activeMeso.title,
+            mesoId: activeMeso._id,
             mesoDuration: Number(activeMeso.duration),
             includeDeload: activeMeso.includeDeload,
             splitType: activeMeso.splitType,

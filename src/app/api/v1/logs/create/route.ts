@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         const initialWorkoutLog = {
             mesoTitle: activeMeso.title,
             mesoDuration: activeMeso.duration,
+            mesoId: activeMeso._id,
             includeDeload: activeMeso.includeDeload,
             splitType: activeMeso.splitType,
             createdBy: activeMeso.createdBy,

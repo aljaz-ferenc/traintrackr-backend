@@ -28,11 +28,9 @@ const userSchema = new mongoose.Schema({
         },
         startDate: {
             type: Date,
-            required: ['required']
         },
         endDate: {
             type: Date,
-            required: ['required']
         },
     }
 })

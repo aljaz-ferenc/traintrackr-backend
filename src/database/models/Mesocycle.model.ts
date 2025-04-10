@@ -23,8 +23,8 @@ const mesocycleSchema = new mongoose.Schema({
       required: ['required']
     },
     createdBy: {
-        //TODO: ObjectId
-        type: String,
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'User',
         required: ['required']
     }
 })

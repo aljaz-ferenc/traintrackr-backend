@@ -3,22 +3,22 @@ import mongoose from 'mongoose'
 const setSchema = new mongoose.Schema({
     weight: {
         type: Number,
-        required: ['required'],
+        // required: ['required'],
     },
     reps: {
         type: Number,
-        required: ['required']
+        // required: ['required']
     },
     id: {
         type: String,
-        required: ['required']
+        // required: ['required']
     }
 })
 
 const exerciseWithSetsSchema = new mongoose.Schema({
     sets: {
         type: [setSchema],
-        required: ['required']
+        // required: ['required']
     }
 })
 
@@ -36,27 +36,32 @@ const workoutLogSchema = new mongoose.Schema({
         type: String,
         required: ['required']
     },
+    mesoId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Mesocycle',
+        required: ['required']
+    },
     mesoDuration: {
         type: Number,
         required: ['required']
     },
     includeDeload: {
-       type: Boolean,
-       required: ['required']
-    } ,
+        type: Boolean,
+        required: ['required']
+    },
     splitType: {
         type: String,
         enum: ['synchronous', 'asynchronous'],
         required: ['required']
     },
     createdBy: {
-        //TODO: use ObjectId
-        type: String,
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'User',
         required: ['required']
     },
     weeks: {
         type: [logWeekSchema],
-        required: ['required']
+        // required: ['required']
     }
 })
 
