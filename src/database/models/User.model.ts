@@ -22,12 +22,18 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     activeMesocycle: {
-        mesoId: {
+        mesocycle: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'Mesocycle',
         },
-        startDate: Date,
-        endDate: Date
+        startDate: {
+            type: Date,
+            required: ['required']
+        },
+        endDate: {
+            type: Date,
+            required: ['required']
+        },
     }
 })
 

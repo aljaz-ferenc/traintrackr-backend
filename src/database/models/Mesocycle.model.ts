@@ -14,7 +14,8 @@ const mesocycleSchema = new mongoose.Schema({
         required: ['required']
     },
     splitType: {
-        enum: ['synchronized' ,'asynchronized'],
+        type: String,
+        enum: ['synchronous', 'asynchronous'],
         required: ['required']
     },
     workouts: {

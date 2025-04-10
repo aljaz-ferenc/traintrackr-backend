@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { clerkId:
         const { clerkId } = await params;
         await connectToDatabase();
 
-        const user = await UserModel.findOne({ clerkId });
+        const user = await UserModel.findOne({ clerkId }).populate('activeMesocycle.mesocycle')
 
         if (!user) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
