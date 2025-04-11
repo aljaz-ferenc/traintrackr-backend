@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
 import MesocycleModel from "@/database/models/Mesocycle.model";
 import WorkoutLogModel from "@/database/models/WorkoutLog.model";
+import UserModel from "@/database/models/User.model";
 
 export async function OPTIONS() {
     return NextResponse.json({}, {
@@ -19,8 +20,10 @@ export async function PUT(request: Request) {
         await connectToDatabase();
 
         const body = await request.json();
-        const {weekNumber, workout, mesoId} = body
-        console.log(workout.exercises[0])
+        const {weekNumber, workout, mesoId, userId} = body
+        console.log('USER_ID: ', userId)
+        console.log('MESO_ID: ', mesoId)
+        console.log('WEEK_NUMBER: ', weekNumber)
 
         const workoutLog = await WorkoutLogModel.findOne({mesoId})
 
@@ -28,17 +31,12 @@ export async function PUT(request: Request) {
             throw new Error('WorkoutLog not found')
         }
 
-        const setsToInsert = workout.exercises.flatMap((exercise) =>
-            exercise.sets.map((set) => ({
-                weight: set.weight,
-                reps: set.reps,
-                id: set.id,
-            }))
-        );
-
+        workout.completedAt = new Date()
         workoutLog.weeks[weekNumber - 1].workouts.push(workout);
 
         const updatedLog = await workoutLog.save()
+
+        await UserModel.findByIdAndUpdate(userId, {lastWorkout: new Date()})
 
         return NextResponse.json(
             {data: updatedLog},

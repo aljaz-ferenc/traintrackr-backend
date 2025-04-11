@@ -42,6 +42,9 @@ const workoutSchema = new mongoose.Schema({
     },
     exercises: {
         type: [exerciseWithSetsSchema]
+    },
+    completedAt: {
+        type: Date
     }
 })
 

@@ -21,6 +21,9 @@ const userSchema = new mongoose.Schema({
     image: {
         type: String
     },
+    lastWorkout: {
+      type: Date,
+    },
     activeMesocycle: {
         mesocycle: {
             type: mongoose.SchemaTypes.ObjectId,
