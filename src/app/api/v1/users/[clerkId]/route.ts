@@ -16,7 +16,16 @@ export async function OPTIONS() {
 export async function GET(request: NextRequest, { params }: { params: { clerkId: string } }) {
     try {
         const { clerkId } = await params;
+        const searchParams = request.nextUrl.searchParams
         await connectToDatabase();
+
+        if(searchParams.has('workoutDates')){
+            console.log('WORKOUT_DATES')
+        }
+
+        if(searchParams.has('nutrition')){
+            console.log('NUTRITION')
+        }
 
         const user = await UserModel.findOne({ clerkId }).populate('activeMesocycle.mesocycle')
 

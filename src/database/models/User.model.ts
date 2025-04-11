@@ -1,5 +1,25 @@
 import mongoose from 'mongoose'
 
+const userWeightSchema = new mongoose.Schema({
+    value: {
+        type: Number
+    },
+    date: {
+        type: Date
+    },
+    // units: {
+    //     type: String,
+    //     enum: ['kg', 'lb'],
+    //     default: 'kg'
+    // }
+})
+
+const userStatsSchema = new mongoose.Schema({
+    weight: {
+        type: userWeightSchema,
+    }
+})
+
 const userSchema = new mongoose.Schema({
     clerkId: {
         type: String,
@@ -35,6 +55,9 @@ const userSchema = new mongoose.Schema({
         endDate: {
             type: Date,
         },
+    },
+    stats: {
+        type: userStatsSchema
     }
 })
 

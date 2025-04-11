@@ -18,6 +18,10 @@ export async function POST(request: Request) {
     const user = await request.json()
     console.log(user)
 
+    user.stats = {
+        weight: []
+    }
+
     try {
         await connectToDatabase();
         const createdUser = await UserModel.create(user);
