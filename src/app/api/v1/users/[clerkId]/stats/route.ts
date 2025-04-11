@@ -19,7 +19,10 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ cl
         const {clerkId} = await params
         console.log(clerkId)
 
-        return NextResponse.json({data: clerkId}, {
+        await connectToDatabase()
+        const user = await UserModel.findOne({clerkId})
+
+        return NextResponse.json({data: user.stats}, {
             status: 201,
             headers: {
                 "Access-Control-Allow-Origin": "*"
