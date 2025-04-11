@@ -20,6 +20,7 @@ export async function PUT(request: Request) {
 
         const body = await request.json();
         const {weekNumber, workout, mesoId} = body
+        console.log(workout.exercises[0])
 
         const workoutLog = await WorkoutLogModel.findOne({mesoId})
 
@@ -35,9 +36,7 @@ export async function PUT(request: Request) {
             }))
         );
 
-        workoutLog.weeks[weekNumber - 1].workouts.push({
-            sets: setsToInsert,
-        });
+        workoutLog.weeks[weekNumber - 1].workouts.push(workout);
 
         const updatedLog = await workoutLog.save()
 

@@ -16,9 +16,32 @@ const setSchema = new mongoose.Schema({
 })
 
 const exerciseWithSetsSchema = new mongoose.Schema({
+    id: {
+        type: Number // STRING???????
+    },
+    name: {
+        type: String
+    },
+    primaryMuscle: {
+        type: String
+    },
+    secondaryMuscles: {
+      type: [String]
+    },
     sets: {
         type: [setSchema],
-        // required: ['required']
+    }
+})
+
+const workoutSchema = new mongoose.Schema({
+    id: {
+        type: String,
+    },
+    day: {
+        type: Number
+    },
+    exercises: {
+        type: [exerciseWithSetsSchema]
     }
 })
 
@@ -27,7 +50,7 @@ const logWeekSchema = new mongoose.Schema({
         type: Number,
     },
     workouts: {
-        type: [exerciseWithSetsSchema],
+        type: [workoutSchema],
     }
 })
 
