@@ -1,4 +1,4 @@
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
 import MesocycleModel from "@/database/models/Mesocycle.model";
 
@@ -7,7 +7,7 @@ export async function OPTIONS() {
         status: 200,
         headers: {
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT",
             "Access-Control-Allow-Headers": "Content-Type, Authorization",
         },
     });
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         await connectToDatabase();
 
         const newMesocycle = await request.json();
-        console.log('NEW_MESOCYCLE: ', newMesocycle)
+        delete newMesocycle._id
         const createdMesocycle = await MesocycleModel.create(newMesocycle);
 
         return NextResponse.json(
