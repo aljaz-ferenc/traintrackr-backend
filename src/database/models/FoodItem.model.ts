@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const foodItemSchema = new mongoose.Schema({
+export const foodItemSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'required']
@@ -25,7 +25,17 @@ const foodItemSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'User',
         required: [true, 'required']
-    }
+    },
+    portions: [{
+        name: {
+            type: String,
+            required: [true, 'required']
+        },
+        grams: {
+            type: Number,
+            required: [true, 'required']
+        }
+    }]
 })
 
 const FoodItemModel = mongoose.models.FoodItem || mongoose.model('FoodItem', foodItemSchema)
