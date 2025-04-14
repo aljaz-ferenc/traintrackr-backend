@@ -3,7 +3,6 @@ import { connectToDatabase } from "@/database/mongoose";
 import UserModel from "@/database/models/User.model";
 import { endOfToday, subMonths, subWeeks, subYears } from "date-fns";
 
-// Allow CORS for every request
 export async function OPTIONS() {
 	return NextResponse.json(
 		{},
@@ -48,7 +47,7 @@ export async function GET(
 		console.log("FROM_DATE: ", fromDate);
 		console.log("TO_DATE: ", toDate);
 
-		await connectToDatabase(); // MOVE THIS FIRST ⚡
+		await connectToDatabase();
 
 		const filteredWeights = await UserModel.aggregate([
 			{ $match: { clerkId } },
@@ -61,8 +60,8 @@ export async function GET(
 			{
 				$project: {
 					_id: 0,
-					value: "$stats.weight.value", // <-- Correct this
-					date: "$stats.weight.date", // <-- Include date if needed
+					value: "$stats.weight.value",
+					date: "$stats.weight.date",
 				},
 			},
 		]);
@@ -90,7 +89,7 @@ export async function GET(
 		return NextResponse.json(
 			{ data: null },
 			{
-				status: 500, // Make it 500 for error
+				status: 500,
 				headers: {
 					"Access-Control-Allow-Origin": "*",
 				},

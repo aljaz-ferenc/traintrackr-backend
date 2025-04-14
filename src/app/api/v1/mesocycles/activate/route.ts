@@ -22,22 +22,18 @@ export async function POST(request: NextRequest) {
 	try {
 		await MesocycleModel;
 		const body = await request.json();
-		const { clerkId, activeMesocycle } = body;
-		console.log("CLERK_ID: ", clerkId);
+		const { userId, activeMesocycle } = body;
 
 		await connectToDatabase();
 
-		const updatedUser = await UserModel.findOneAndUpdate(
-			{ clerkId },
+		const updatedUser = await UserModel.findByIdAndUpdate(
+			userId,
 			{ activeMesocycle },
 			{ new: true },
 		);
-		console.log("UPDATED_USER: ", updatedUser);
 
 		const user = await updatedUser.populate("activeMesocycle.mesocycle");
 
-		// const user = await UserModel.findOne({ clerkId: updatedUser.clerkId }).populate('activeMesocycle.mesocycle');
-		console.log(user);
 		if (!user || !user.activeMesocycle || !user.activeMesocycle.mesocycle) {
 			return NextResponse.json(
 				{ message: "User or active mesocycle not found" },
@@ -58,8 +54,7 @@ export async function POST(request: NextRequest) {
 			createdBy: activeMeso.createdBy,
 			weeks: createEmptyWeeks(activeMeso.duration),
 		};
-		//
-		// // Create the workout log
+
 		const log = await WorkoutLogModel.create(initialWorkoutLog);
 
 		if (!updatedUser) {

@@ -19,14 +19,13 @@ export async function OPTIONS() {
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: Promise<{ clerkId: string }> },
+	{ params }: { params: Promise<{ userId: string }> },
 ) {
 	try {
 		//TODO: use same userId from mongo
-		const { clerkId } = await params;
-		const user = await UserModel.findOne({ clerkId });
+		const { userId } = await params;
 		await connectToDatabase();
-		const nutritions = await NutritionModel.find({ createdBy: user._id });
+		const nutritions = await NutritionModel.find({ createdBy: userId });
 
 		return NextResponse.json(nutritions, {
 			headers: {

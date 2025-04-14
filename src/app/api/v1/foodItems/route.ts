@@ -40,21 +40,4 @@ export async function POST(request: NextRequest) {
 	}
 }
 
-export async function GET(request: NextRequest) {
-	try {
-		await connectToDatabase();
 
-		const foodItems = await FoodItemModel.find();
-
-		return NextResponse.json(foodItems, {
-			status: 201,
-			headers: { "Access-Control-Allow-Origin": "*" },
-		});
-	} catch (err) {
-		console.error("Error finding food items:", err);
-		return NextResponse.json(
-			{ message: "Error finding food items" },
-			{ status: 500 },
-		);
-	}
-}
