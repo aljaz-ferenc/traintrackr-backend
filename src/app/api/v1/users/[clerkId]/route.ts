@@ -2,10 +2,6 @@ import { connectToDatabase } from "@/database/mongoose";
 import { type NextRequest, NextResponse } from "next/server";
 import UserModel from "@/database/models/User.model";
 
-interface Params {
-	params: { clerkId: string };
-}
-
 export async function OPTIONS() {
 	return NextResponse.json(
 		{},
@@ -20,12 +16,9 @@ export async function OPTIONS() {
 	);
 }
 
-export async function GET(
-	request: NextRequest,
-	context: Params
-) {
+export async function GET(request: NextRequest, context: { params: Promise<{ clerkId: string }> }) {
 	try {
-		const { clerkId } = await context.params;
+		const { clerkId } = await context.params;  // Access clerkId directly from params
 		const searchParams = request.nextUrl.searchParams;
 		await connectToDatabase();
 
