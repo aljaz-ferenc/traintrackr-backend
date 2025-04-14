@@ -14,7 +14,6 @@ export async function POST(req: Request) {
 		);
 		console.log("Webhook payload:", evt.data);
 
-		// Handle different event types
 		switch (eventType) {
 			case "user.created": {
 				const { email_addresses, first_name, image_url, last_name, username } =
