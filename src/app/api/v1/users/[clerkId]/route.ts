@@ -2,6 +2,10 @@ import { connectToDatabase } from "@/database/mongoose";
 import { type NextRequest, NextResponse } from "next/server";
 import UserModel from "@/database/models/User.model";
 
+interface Params {
+	params: { clerkId: string };
+}
+
 export async function OPTIONS() {
 	return NextResponse.json(
 		{},
@@ -12,16 +16,16 @@ export async function OPTIONS() {
 				"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 				"Access-Control-Allow-Headers": "Content-Type, Authorization",
 			},
-		},
+		}
 	);
 }
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { clerkId: string } },
+	context: Params
 ) {
 	try {
-		const { clerkId } = await params;
+		const { clerkId } = await context.params;
 		const searchParams = request.nextUrl.searchParams;
 		await connectToDatabase();
 
@@ -34,7 +38,7 @@ export async function GET(
 		}
 
 		const user = await UserModel.findOne({ clerkId }).populate(
-			"activeMesocycle.mesocycle",
+			"activeMesocycle.mesocycle"
 		);
 
 		if (!user) {
@@ -46,13 +50,12 @@ export async function GET(
 			{
 				headers: { "Access-Control-Allow-Origin": "*" },
 				status: 200,
-			},
+			}
 		);
-	} catch (err) {
-		console.log("Error fetching user:", err);
+	} catch (error) {
 		return NextResponse.json(
-			{ message: "Something went wrong getting user" },
-			{ status: 500 },
+			{ message: "Internal Server Error" },
+			{ status: 500 }
 		);
 	}
 }

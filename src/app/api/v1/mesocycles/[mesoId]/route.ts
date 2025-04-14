@@ -22,7 +22,7 @@ export async function DELETE(
 ) {
 	try {
 		await connectToDatabase();
-		const { mesoId } = await params;
+		const { mesoId } = await params; // Await params here
 		const deletedMeso = await MesocycleModel.findByIdAndDelete(mesoId);
 
 		return NextResponse.json(

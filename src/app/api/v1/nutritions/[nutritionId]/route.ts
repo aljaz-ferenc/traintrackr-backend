@@ -25,8 +25,7 @@ export async function DELETE(
 		await connectToDatabase();
 		const { nutritionId } = await params;
 		console.log(nutritionId);
-		const deletedNutrition =
-			await NutritionModel.findByIdAndDelete(nutritionId);
+		const deletedNutrition = await NutritionModel.findByIdAndDelete(nutritionId);
 
 		return NextResponse.json(deletedNutrition, {
 			headers: {
@@ -36,6 +35,6 @@ export async function DELETE(
 		});
 	} catch (err) {
 		console.log(err);
-		return NextResponse.json({ error: "No mesoId" }, { status: 404 });
+		return NextResponse.json({ error: "No nutritionId" }, { status: 404 });
 	}
 }
