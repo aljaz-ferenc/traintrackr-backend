@@ -1,22 +1,24 @@
 {
-  "name": "traintrackr",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "@clerk/nextjs": "^6.14.1",
-    "date-fns": "^4.1.0",
-    "mongoose": "^8.13.2",
-    "next": "15.2.5",
-    "svix": "^1.63.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "typescript": "^5"
-  }
+	"name": "traintrackr",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"biome": "biome lint ./src && biome format --write ./src"
+	},
+	"dependencies": {
+		"@clerk/nextjs": "^6.14.1",
+		"date-fns": "^4.1.0",
+		"mongoose": "^8.13.2",
+		"next": "15.2.5",
+		"svix": "^1.63.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"typescript": "^5"
+	}
 }

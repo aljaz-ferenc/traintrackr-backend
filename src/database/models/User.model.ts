@@ -1,68 +1,70 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const userWeightSchema = new mongoose.Schema({
-    value: {
-        type: Number
-    },
-    date: {
-        type: Date
-    },
-    // units: {
-    //     type: String,
-    //     enum: ['kg', 'lb'],
-    //     default: 'kg'
-    // }
-})
+	value: {
+		type: Number,
+	},
+	date: {
+		type: Date,
+	},
+	// units: {
+	//     type: String,
+	//     enum: ['kg', 'lb'],
+	//     default: 'kg'
+	// }
+});
 
 const userStatsSchema = new mongoose.Schema({
-    weight: {
-        type: userWeightSchema,
-    }
-})
+	weight: {
+		type: userWeightSchema,
+	},
+});
 
 const userSchema = new mongoose.Schema({
-    clerkId: {
-        type: String,
-        required: ['required']
-    },
-    email: {
-        type: String,
-        required: ['required']
-    },
-    username: {
-        type: String
-    },
-    firstName: {
-        type: String
-    },
-    lastName: {
-        type: String
-    },
-    image: {
-        type: String
-    },
-    lastWorkout: {
-      type: Date,
-    },
-    activeMesocycle: {
-        mesocycle: {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: 'Mesocycle',
-        },
-        startDate: {
-            type: Date,
-        },
-        endDate: {
-            type: Date,
-        },
-    },
-    stats: {
-        weight: [{
-            value: Number,
-            date: Date
-        }]
-    }
-})
+	clerkId: {
+		type: String,
+		required: ["required"],
+	},
+	email: {
+		type: String,
+		required: ["required"],
+	},
+	username: {
+		type: String,
+	},
+	firstName: {
+		type: String,
+	},
+	lastName: {
+		type: String,
+	},
+	image: {
+		type: String,
+	},
+	lastWorkout: {
+		type: Date,
+	},
+	activeMesocycle: {
+		mesocycle: {
+			type: mongoose.SchemaTypes.ObjectId,
+			ref: "Mesocycle",
+		},
+		startDate: {
+			type: Date,
+		},
+		endDate: {
+			type: Date,
+		},
+	},
+	stats: {
+		weight: [
+			{
+				value: Number,
+				date: Date,
+			},
+		],
+	},
+});
 
-const UserModel = mongoose.models.User || mongoose.model('User', userSchema)
-export default UserModel
+const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
+export default UserModel;

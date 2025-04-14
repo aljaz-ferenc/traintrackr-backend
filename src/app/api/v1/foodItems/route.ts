@@ -1,48 +1,60 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import UserModel from "@/database/models/User.model";
 import { connectToDatabase } from "@/database/mongoose";
 import FoodItemModel from "@/database/models/FoodItem.model";
 
 export async function OPTIONS() {
-    return NextResponse.json({}, {
-        status: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-    });
+	return NextResponse.json(
+		{},
+		{
+			status: 200,
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+				"Access-Control-Allow-Headers": "Content-Type, Authorization",
+			},
+		},
+	);
 }
 
 export async function POST(request: NextRequest) {
-    try {
-        const  foodItem  = await request.json();
-        await connectToDatabase();
-        console.log(foodItem)
-        const newFoodItem = await FoodItemModel.create(foodItem)
+	try {
+		const foodItem = await request.json();
+		await connectToDatabase();
+		console.log(foodItem);
+		const newFoodItem = await FoodItemModel.create(foodItem);
 
-        return NextResponse.json({data: null }, {
-            status: 201,
-            headers: { "Access-Control-Allow-Origin": "*" }
-        });
-    } catch (err) {
-        console.error("Error creating food item:", err);
-        return NextResponse.json({ message: 'Error creating food item' }, { status: 500 });
-    }
+		return NextResponse.json(
+			{ data: null },
+			{
+				status: 201,
+				headers: { "Access-Control-Allow-Origin": "*" },
+			},
+		);
+	} catch (err) {
+		console.error("Error creating food item:", err);
+		return NextResponse.json(
+			{ message: "Error creating food item" },
+			{ status: 500 },
+		);
+	}
 }
 
 export async function GET(request: NextRequest) {
-    try {
-        await connectToDatabase();
+	try {
+		await connectToDatabase();
 
-        const foodItems = await FoodItemModel.find()
+		const foodItems = await FoodItemModel.find();
 
-        return NextResponse.json(foodItems , {
-            status: 201,
-            headers: { "Access-Control-Allow-Origin": "*" }
-        });
-    } catch (err) {
-        console.error("Error finding food items:", err);
-        return NextResponse.json({ message: 'Error finding food items' }, { status: 500 });
-    }
+		return NextResponse.json(foodItems, {
+			status: 201,
+			headers: { "Access-Control-Allow-Origin": "*" },
+		});
+	} catch (err) {
+		console.error("Error finding food items:", err);
+		return NextResponse.json(
+			{ message: "Error finding food items" },
+			{ status: 500 },
+		);
+	}
 }
