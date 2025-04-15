@@ -26,12 +26,31 @@ export async function GET(
 		const { userId } = await params;
 		await connectToDatabase();
 		const nutritions = await NutritionModel.find({ createdBy: userId });
-
-		return NextResponse.json(nutritions, {
-			headers: {
-				"Access-Control-Allow-Origin": "*",
+		const totalMacros = nutritions.reduce(
+			(acc, nutrition) => {
+				return {
+					calories: nutrition.item.calories + acc.calories,
+					protein: nutrition.item.protein + acc.protein,
+					fat: nutrition.item.fat + acc.fat,
+					carbs: nutrition.item.carbs + acc.carbs,
+				};
 			},
-		});
+			{
+				calories: 0,
+				protein: 0,
+				fat: 0,
+				carbs: 0,
+			},
+		);
+
+		return NextResponse.json(
+			{ nutritions, totalMacros },
+			{
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+				},
+			},
+		);
 	} catch (error) {
 		console.log(error);
 		return NextResponse.json(
