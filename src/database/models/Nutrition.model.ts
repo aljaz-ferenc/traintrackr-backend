@@ -16,7 +16,8 @@ const nutritionSchema = new mongoose.Schema({
 		required: [true, "required"],
 	},
 	item: {
-		type: foodItemSchema,
+		type: mongoose.SchemaTypes.ObjectId,
+		ref: 'FoodItem',
 		required: [true, "required"],
 	},
 });

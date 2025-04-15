@@ -1,5 +1,5 @@
+import '@/database/models/FoodItem.model'
 import NutritionModel from "@/database/models/Nutrition.model";
-import UserModel from "@/database/models/User.model";
 import { connectToDatabase } from "@/database/mongoose";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -25,7 +25,7 @@ export async function GET(
 		//TODO: use same userId from mongo
 		const { userId } = await params;
 		await connectToDatabase();
-		const nutritions = await NutritionModel.find({ createdBy: userId });
+		const nutritions = await NutritionModel.find({ createdBy: userId }).populate('item');
 		const totalMacros = nutritions.reduce(
 			(acc, nutrition) => {
 				return {

@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
 		const nutrition = await request.json();
 		console.log(nutrition);
 		await connectToDatabase();
+		nutrition.item = nutrition.item._id
 		const newNutrition = await NutritionModel.create(nutrition);
 
 		return NextResponse.json(newNutrition, {
