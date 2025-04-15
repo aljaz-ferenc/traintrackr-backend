@@ -1,7 +1,7 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/database/mongoose";
 import NutritionModel from "@/database/models/Nutrition.model";
 import UserModel from "@/database/models/User.model";
+import { connectToDatabase } from "@/database/mongoose";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function OPTIONS() {
 	return NextResponse.json(
@@ -33,6 +33,7 @@ export async function GET(
 			},
 		});
 	} catch (error) {
+		console.log(error);
 		return NextResponse.json(
 			{ message: "Error getting mesocycles" },
 			{ status: 500 },
