@@ -97,7 +97,7 @@ export async function getStatuses(user: IUser, meso: IMesocycle) {
     const completedWorkoutsDates = log?.weeks.map(week => {
         return week.workouts
             .filter((workout: IMesocycle['workouts'][0]) => workout.completedAt)
-            .map(workout => startOfDay((workout.completedAt)).toISOString())
+            .map(workout => startOfDay((workout.completedAt!)).toISOString())
     }).flat()
 
 
