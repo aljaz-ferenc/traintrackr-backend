@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {type InferSchemaType} from "mongoose";
 
 const mesocycleSchema = new mongoose.Schema({
 	title: {
@@ -32,3 +32,4 @@ const mesocycleSchema = new mongoose.Schema({
 const MesocycleModel =
 	mongoose.models.Mesocycle || mongoose.model("Mesocycle", mesocycleSchema);
 export default MesocycleModel;
+export type IMesocycle = InferSchemaType<typeof mesocycleSchema>

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {type InferSchemaType} from "mongoose";
 import { foodItemSchema } from "@/database/models/FoodItem.model";
 
 const nutritionSchema = new mongoose.Schema({
@@ -25,3 +25,4 @@ const nutritionSchema = new mongoose.Schema({
 const NutritionModel =
 	mongoose.models.Nutrition || mongoose.model("Nutrition", nutritionSchema);
 export default NutritionModel;
+export type INutrition = InferSchemaType<typeof nutritionSchema>

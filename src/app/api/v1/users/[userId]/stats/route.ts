@@ -1,139 +1,147 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/database/mongoose";
-import UserModel from "@/database/models/User.model";
-import { endOfToday, subMonths, subWeeks, subYears } from "date-fns";
+import {type NextRequest, NextResponse} from "next/server";
+import {connectToDatabase} from "@/database/mongoose";
+import UserModel, {IUser} from "@/database/models/User.model";
+import {differenceInDays, endOfToday, startOfDay, subDays, subMonths, subWeeks, subYears} from "date-fns";
+import mongoose, {InferSchemaType} from "mongoose";
+import {calcActiveMesoProgress} from "@/utils/utils";
 
 export async function OPTIONS() {
-	return NextResponse.json(
-		{},
-		{
-			status: 200,
-			headers: {
-				"Access-Control-Allow-Origin": "*",
-				"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-				"Access-Control-Allow-Headers": "Content-Type, Authorization",
-			},
-		},
-	);
+    return NextResponse.json(
+        {},
+        {
+            status: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            },
+        },
+    );
 }
 
 export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ clerkId: string }> },
+    request: NextRequest,
+    {params}: { params: Promise<{ userId: string }> },
 ) {
-	try {
-		const { clerkId } = await params;
-		const searchParams = request.nextUrl.searchParams;
-		const range = searchParams.get("range");
+    try {
+        const {userId} = await params;
+        const user = await UserModel.findById(new mongoose.Types.ObjectId(userId))
 
-		const toDate = endOfToday();
-		let fromDate: Date;
+        if (!user) {
+            console.log('User not found')
+            return NextResponse.json(
+                {message: "User not found"},
+                {status: 404},
+            );
+        }
 
-		switch (range) {
-			case "week":
-				fromDate = subWeeks(toDate, 1);
-				break;
-			case "month":
-				fromDate = subMonths(toDate, 1);
-				break;
-			case "year":
-				fromDate = subYears(toDate, 1);
-				break;
-			default:
-				fromDate = subWeeks(toDate, 1);
-		}
+        const searchParams = request.nextUrl.searchParams;
+        const range = searchParams.get("range");
 
-		console.log("RANGE: ", range);
-		console.log("FROM_DATE: ", fromDate);
-		console.log("TO_DATE: ", toDate);
 
-		await connectToDatabase();
+        const toDate = endOfToday();
+        let fromDate: Date;
 
-		const filteredWeights = await UserModel.aggregate([
-			{ $match: { clerkId } },
-			{ $unwind: "$stats.weight" },
-			{
-				$match: {
-					"stats.weight.date": { $gte: fromDate },
-				},
-			},
-			{
-				$project: {
-					_id: 0,
-					value: "$stats.weight.value",
-					date: "$stats.weight.date",
-				},
-			},
-		]);
+        switch (range) {
+            case "week":
+                fromDate = subWeeks(toDate, 1);
+                break;
+            case "month":
+                fromDate = subMonths(toDate, 1);
+                break;
+            case "year":
+                fromDate = subYears(toDate, 1);
+                break;
+            default:
+                fromDate = subWeeks(toDate, 1);
+                break
+        }
 
-		console.log("FILTERED_WEIGHTS: ", filteredWeights);
+        await connectToDatabase();
 
-		if (!filteredWeights.length) {
-			return NextResponse.json(
-				{ message: "No weights found" },
-				{ status: 404 },
-			);
-		}
+        const filteredWeights = await UserModel.aggregate([
+            {$match: {_id: new mongoose.Types.ObjectId(userId)}},
+            {$unwind: "$stats.weight"},
+            {
+                $match: {
+                    "stats.weight.date": {$gte: fromDate},
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    value: "$stats.weight.value",
+                    date: "$stats.weight.date",
+                },
+            },
+        ]);
 
-		return NextResponse.json(
-			{ weight: filteredWeights },
-			{
-				status: 201,
-				headers: {
-					"Access-Control-Allow-Origin": "*",
-				},
-			},
-		);
-	} catch (err) {
-		console.error(err);
-		return NextResponse.json(
-			{ data: null },
-			{
-				status: 500,
-				headers: {
-					"Access-Control-Allow-Origin": "*",
-				},
-			},
-		);
-	}
+        if (!filteredWeights.length) {
+            return NextResponse.json(
+                {message: "No weights found"},
+                {status: 404},
+            );
+        }
+
+        return NextResponse.json(
+            {weight: filteredWeights, activeMesoProgress: calcActiveMesoProgress(user)},
+            {
+                status: 201,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+            },
+        );
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            {data: null},
+            {
+                status: 500,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+            },
+        );
+    }
 }
 
 export async function POST(
-	request: Request,
-	{ params }: { params: Promise<{ clerkId: string }> },
+    request: Request,
+    {params}: { params: Promise<{ userId: string }> },
 ) {
-	try {
-		const userStats = await request.json();
-		const { clerkId } = await params;
-		console.log(userStats);
+    try {
+        const userStats = await request.json();
+        const {userId} = await params;
+        console.log(userStats);
 
-		await connectToDatabase();
-		const user = await UserModel.findOne({ clerkId });
-		console.log(user);
+        await connectToDatabase();
+        const user = await UserModel.findById(userId);
+        console.log(user);
 
-		if (userStats.weight) {
-			user.stats.weight.push({ value: userStats.weight, date: new Date() });
-			await user.save();
-		}
+        if (userStats.weight) {
+            user.stats.weight.push({value: userStats.weight, date: new Date()});
+            await user.save();
+        }
 
-		return NextResponse.json(
-			{ userStats },
-			{
-				headers: { "Access-Control-Allow-Origin": "*" },
-				status: 200,
-			},
-		);
-	} catch (error) {
-		console.error("Error creating user:", error);
+        return NextResponse.json(
+            {userStats},
+            {
+                headers: {"Access-Control-Allow-Origin": "*"},
+                status: 200,
+            },
+        );
+    } catch (error) {
+        console.error("Error creating user:", error);
 
-		return NextResponse.json(
-			{ message: "Internal Server Error" },
-			{
-				status: 500,
-				headers: {
-					"Access-Control-Allow-Origin": "*",
-				},
-			},
-		);
-	}
+        return NextResponse.json(
+            {message: "Internal Server Error"},
+            {
+                status: 500,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+            },
+        );
+    }
 }

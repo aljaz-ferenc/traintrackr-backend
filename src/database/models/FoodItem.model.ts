@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {type InferSchemaType} from "mongoose";
 
 export const foodItemSchema = new mongoose.Schema({
 	name: {
@@ -43,3 +43,4 @@ export const foodItemSchema = new mongoose.Schema({
 const FoodItemModel =
 	mongoose.models.FoodItem || mongoose.model("FoodItem", foodItemSchema);
 export default FoodItemModel;
+export type IFoodItem = InferSchemaType<typeof foodItemSchema>

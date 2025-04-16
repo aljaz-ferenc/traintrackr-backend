@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {type InferSchemaType} from "mongoose";
 
 const setSchema = new mongoose.Schema({
 	weight: {
@@ -94,3 +94,4 @@ const workoutLogSchema = new mongoose.Schema({
 const WorkoutLogModel =
 	mongoose.models.WorkoutLog || mongoose.model("WorkoutLog", workoutLogSchema);
 export default WorkoutLogModel;
+export type IWorkoutLog = InferSchemaType<typeof workoutLogSchema>
