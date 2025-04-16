@@ -3,7 +3,7 @@ import {
     addDays,
     differenceInDays,
     endOfToday,
-    getDay,
+    getDay, isAfter,
     isBefore,
     startOfDay,
     subDays,
@@ -114,7 +114,14 @@ export async function getStatuses(user: IUser, meso: IMesocycle) {
             const dayNumber = getDay(currentDateString)
 
             const wasCompleted = completedWorkoutsDates?.includes(currentDateString)
-            const status = wasCompleted ? 'completed' : workoutDays.includes(dayNumber) ? 'missed' : 'rest'
+            const status = wasCompleted
+                ? 'completed'
+                : isAfter(currentDate, new Date())
+                    ? 'upcoming'
+                    : workoutDays.includes(dayNumber)
+                        ? 'missed'
+                        : 'rest';
+
 
             days.push({ date: currentDate, status })
 

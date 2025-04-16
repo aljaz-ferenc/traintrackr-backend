@@ -1,22 +1,10 @@
 import {type NextRequest, NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
 import UserModel, {IUser} from "@/database/models/User.model";
-import {
-    addDays,
-    addWeeks,
-    differenceInDays,
-    endOfToday, getDay, isBefore, isEqual,
-    startOfDay,
-    subDays,
-    subMonths,
-    subWeeks,
-    subYears
-} from "date-fns";
-import mongoose, {InferSchemaType} from "mongoose";
+import mongoose from "mongoose";
 import {calcActiveMesoProgress, getCompletedWorkoutsRatio, getStatuses, getWeightsByRange} from "@/utils/utils";
 import {Range} from "@/types/types";
 import MesocycleModel, {IMesocycle} from "@/database/models/Mesocycle.model";
-import WorkoutLogModel, {IWorkoutLog} from "@/database/models/WorkoutLog.model";
 
 export async function OPTIONS() {
     return NextResponse.json(
