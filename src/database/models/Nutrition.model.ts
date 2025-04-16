@@ -1,4 +1,4 @@
-import mongoose, {type InferSchemaType, Types} from "mongoose";
+import mongoose, {type InferSchemaType, type Types} from "mongoose";
 import { foodItemSchema } from "@/database/models/FoodItem.model";
 
 const nutritionSchema = new mongoose.Schema({

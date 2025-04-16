@@ -1,9 +1,9 @@
 import {type NextRequest, NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
-import UserModel, {IUser} from "@/database/models/User.model";
+import UserModel, {type IUser} from "@/database/models/User.model";
 import mongoose from "mongoose";
 import {calcActiveMesoProgress, getCompletedWorkoutsRatio, getStatuses, getWeightsByRange} from "@/utils/utils";
-import {Range} from "@/types/types";
+import type {Range} from "@/types/types";
 import MesocycleModel, {IMesocycle} from "@/database/models/Mesocycle.model";
 
 export async function OPTIONS() {

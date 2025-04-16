@@ -1,4 +1,4 @@
-import UserModel, {IUser} from "@/database/models/User.model";
+import UserModel, {type IUser} from "@/database/models/User.model";
 import {
     addDays,
     differenceInDays,
@@ -12,9 +12,9 @@ import {
     subYears
 } from "date-fns";
 import mongoose from "mongoose";
-import {Range} from "@/types/types";
-import MesocycleModel, {IMesocycle} from "@/database/models/Mesocycle.model";
-import WorkoutLogModel, {IWorkoutLog} from "@/database/models/WorkoutLog.model";
+import type {Range} from "@/types/types";
+import MesocycleModel, {type IMesocycle} from "@/database/models/Mesocycle.model";
+import WorkoutLogModel, {type IWorkoutLog} from "@/database/models/WorkoutLog.model";
 
 export function calcActiveMesoProgress(user: IUser) {
     if(!user.activeMesocycle) return null
@@ -94,11 +94,11 @@ export async function getStatuses(user: IUser, meso: IMesocycle) {
 
     const log: IWorkoutLog | null = await WorkoutLogModel.findOne({mesoId: user.activeMesocycle?.mesocycle})
 
-    const completedWorkoutsDates = log?.weeks.map(week => {
+    const completedWorkoutsDates = log?.weeks.flatMap(week => {
         return week.workouts
             .filter((workout: IMesocycle['workouts'][0]) => workout.completedAt)
             .map(workout => startOfDay((workout.completedAt!)).toISOString())
-    }).flat()
+    })
 
 
     const days = []

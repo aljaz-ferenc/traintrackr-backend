@@ -1,4 +1,4 @@
-import mongoose, {type InferSchemaType, Types} from "mongoose";
+import mongoose, {type InferSchemaType, type Types} from "mongoose";
 
 export const foodItemSchema = new mongoose.Schema({
 	name: {
