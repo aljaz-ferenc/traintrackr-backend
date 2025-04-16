@@ -1,9 +1,22 @@
 import {type NextRequest, NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
 import UserModel, {IUser} from "@/database/models/User.model";
-import {differenceInDays, endOfToday, startOfDay, subDays, subMonths, subWeeks, subYears} from "date-fns";
+import {
+    addDays,
+    addWeeks,
+    differenceInDays,
+    endOfToday, getDay, isBefore, isEqual,
+    startOfDay,
+    subDays,
+    subMonths,
+    subWeeks,
+    subYears
+} from "date-fns";
 import mongoose, {InferSchemaType} from "mongoose";
-import {calcActiveMesoProgress} from "@/utils/utils";
+import {calcActiveMesoProgress, getCompletedWorkoutsRatio, getStatuses, getWeightsByRange} from "@/utils/utils";
+import {Range} from "@/types/types";
+import MesocycleModel, {IMesocycle} from "@/database/models/Mesocycle.model";
+import WorkoutLogModel, {IWorkoutLog} from "@/database/models/WorkoutLog.model";
 
 export async function OPTIONS() {
     return NextResponse.json(
@@ -25,7 +38,7 @@ export async function GET(
 ) {
     try {
         const {userId} = await params;
-        const user = await UserModel.findById(new mongoose.Types.ObjectId(userId))
+        const user: IUser | null = await UserModel.findById(new mongoose.Types.ObjectId(userId))
 
         if (!user) {
             console.log('User not found')
@@ -36,55 +49,19 @@ export async function GET(
         }
 
         const searchParams = request.nextUrl.searchParams;
-        const range = searchParams.get("range");
-
-
-        const toDate = endOfToday();
-        let fromDate: Date;
-
-        switch (range) {
-            case "week":
-                fromDate = subWeeks(toDate, 1);
-                break;
-            case "month":
-                fromDate = subMonths(toDate, 1);
-                break;
-            case "year":
-                fromDate = subYears(toDate, 1);
-                break;
-            default:
-                fromDate = subWeeks(toDate, 1);
-                break
-        }
+        const range: Range = searchParams.get("range") as Range || 'week'
 
         await connectToDatabase();
 
-        const filteredWeights = await UserModel.aggregate([
-            {$match: {_id: new mongoose.Types.ObjectId(userId)}},
-            {$unwind: "$stats.weight"},
-            {
-                $match: {
-                    "stats.weight.date": {$gte: fromDate},
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    value: "$stats.weight.value",
-                    date: "$stats.weight.date",
-                },
-            },
-        ]);
-
-        if (!filteredWeights.length) {
-            return NextResponse.json(
-                {message: "No weights found"},
-                {status: 404},
-            );
-        }
+        const activeMeso = await MesocycleModel.findById(user.activeMesocycle?.mesocycle)
 
         return NextResponse.json(
-            {weight: filteredWeights, activeMesoProgress: calcActiveMesoProgress(user)},
+            {
+                weight: await getWeightsByRange(user, range),
+                activeMesoProgress: calcActiveMesoProgress(user),
+                completedWorkoutsRatio: await getCompletedWorkoutsRatio(user),
+                workoutStatuses: await getStatuses(user, activeMeso)
+            },
             {
                 status: 201,
                 headers: {

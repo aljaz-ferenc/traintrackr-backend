@@ -1,4 +1,4 @@
-import mongoose, {type InferSchemaType} from "mongoose";
+import mongoose, {type InferSchemaType, Types} from "mongoose";
 
 const userWeightSchema = new mongoose.Schema({
 	value: {
@@ -68,4 +68,4 @@ const userSchema = new mongoose.Schema({
 
 const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
 export default UserModel;
-export type IUser = InferSchemaType<typeof userSchema>
+export type IUser = InferSchemaType<typeof userSchema> & { _id: Types.ObjectId };

@@ -1,4 +1,4 @@
-import mongoose, {type InferSchemaType} from "mongoose";
+import mongoose, {type InferSchemaType, Types} from "mongoose";
 
 const mesocycleSchema = new mongoose.Schema({
 	title: {
@@ -32,4 +32,4 @@ const mesocycleSchema = new mongoose.Schema({
 const MesocycleModel =
 	mongoose.models.Mesocycle || mongoose.model("Mesocycle", mesocycleSchema);
 export default MesocycleModel;
-export type IMesocycle = InferSchemaType<typeof mesocycleSchema>
+export type IMesocycle= InferSchemaType<typeof mesocycleSchema> & { _id: Types.ObjectId }
