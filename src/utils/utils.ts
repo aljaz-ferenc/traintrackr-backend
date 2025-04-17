@@ -69,9 +69,9 @@ export async function getWeightsByRange(user: IUser, range: Range ){
     ]);
 }
 
-export async function getCompletedWorkoutsRatio(user: IUser){
+export async function getCompletedWorkoutsRatio(user: IUser) {
     const activeMeso: IMesocycle | null = await MesocycleModel.findById(user.activeMesocycle?.mesocycle)
-    if(!activeMeso?.duration) return null
+    if (!activeMeso?.duration || !activeMeso.workouts?.length) return null
 
     const completedWorkouts = await WorkoutLogModel.aggregate([
         { $match: { mesoId: activeMeso._id } },
@@ -86,8 +86,12 @@ export async function getCompletedWorkoutsRatio(user: IUser){
         },
     ]);
 
-    return {total: activeMeso.duration * activeMeso.workouts.length, completed: completedWorkouts}
+    const total = activeMeso.duration * activeMeso.workouts.length;
+    const completed = completedWorkouts[0]?.totalCompleted || 0;
+
+    return { total, completed };
 }
+
 
 export async function getStatuses(user: IUser, meso: IMesocycle) {
     const workoutDays = meso.workouts.map(workout => workout.day)

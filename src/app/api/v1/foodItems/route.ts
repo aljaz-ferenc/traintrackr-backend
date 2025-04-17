@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import UserModel from "@/database/models/User.model";
 import { connectToDatabase } from "@/database/mongoose";
 import FoodItemModel from "@/database/models/FoodItem.model";
 
@@ -25,7 +24,7 @@ export async function POST(request: NextRequest) {
 		const newFoodItem = await FoodItemModel.create(foodItem);
 
 		return NextResponse.json(
-			{ data: null },
+			{ data: newFoodItem },
 			{
 				status: 201,
 				headers: { "Access-Control-Allow-Origin": "*" },
