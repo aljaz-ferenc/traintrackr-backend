@@ -13,11 +13,50 @@ export async function OPTIONS() {
             status: 200,
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             },
         },
     );
+}
+
+export async function PATCH(request: NextRequest, {params} : {params: Promise<{userId: string}>}){
+    try{
+        const {userId} = await params
+        const payload = await request.json();
+        console.log(payload)
+        await connectToDatabase()
+        const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(userId, {stats: payload}, {new: true})
+
+        if (!updatedUser) {
+            console.log('User not found')
+            return NextResponse.json(
+                {message: "User not found"},
+                {status: 404},
+            );
+        }
+
+        return NextResponse.json(
+            updatedUser,
+            {
+                status: 201,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+            },
+        );
+    }catch(error){
+        console.error(error);
+        return NextResponse.json(
+            {data: null},
+            {
+                status: 500,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+            },
+        );
+    }
 }
 
 export async function GET(
