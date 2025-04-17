@@ -1,61 +1,75 @@
 import '@/database/models/FoodItem.model'
-import NutritionModel from "@/database/models/Nutrition.model";
-import { connectToDatabase } from "@/database/mongoose";
-import { type NextRequest, NextResponse } from "next/server";
+import NutritionModel, {INutrition} from "@/database/models/Nutrition.model";
+import {connectToDatabase} from "@/database/mongoose";
+import {type NextRequest, NextResponse} from "next/server";
+import {endOfToday, endOfWeek, isToday, startOfToday, startOfWeek} from "date-fns";
 
 export async function OPTIONS() {
-	return NextResponse.json(
-		{},
-		{
-			status: 200,
-			headers: {
-				"Access-Control-Allow-Origin": "*",
-				"Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT",
-				"Access-Control-Allow-Headers": "Content-Type, Authorization",
-			},
-		},
-	);
+    return NextResponse.json(
+        {},
+        {
+            status: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            },
+        },
+    );
 }
 
 export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ userId: string }> },
+    request: NextRequest,
+    {params}: { params: Promise<{ userId: string }> },
 ) {
-	try {
-		//TODO: use same userId from mongo
-		const { userId } = await params;
-		await connectToDatabase();
-		const nutritions = await NutritionModel.find({ createdBy: userId }).populate('item');
-		const totalMacros = nutritions.reduce(
-			(acc, nutrition) => {
-				return {
-					calories: nutrition.item.calories + acc.calories,
-					protein: nutrition.item.protein + acc.protein,
-					fat: nutrition.item.fat + acc.fat,
-					carbs: nutrition.item.carbs + acc.carbs,
-				};
-			},
-			{
-				calories: 0,
-				protein: 0,
-				fat: 0,
-				carbs: 0,
-			},
-		);
+    try {
+        const {userId} = await params;
+        await connectToDatabase();
+        const nutritionsToday = await NutritionModel.find({
+            createdBy: userId,
+            date: {$gte: startOfToday(), $lte: endOfToday()}
+        }).populate('item');
 
-		return NextResponse.json(
-			{ nutritions, totalMacros },
-			{
-				headers: {
-					"Access-Control-Allow-Origin": "*",
-				},
-			},
-		);
-	} catch (error) {
-		console.log(error);
-		return NextResponse.json(
-			{ message: "Error getting mesocycles" },
-			{ status: 500 },
-		);
-	}
+        const totalMacros = nutritionsToday.reduce(
+            (acc, nutrition) => {
+                return {
+                    calories: nutrition.item.calories + acc.calories,
+                    protein: nutrition.item.protein + acc.protein,
+                    fat: nutrition.item.fat + acc.fat,
+                    carbs: nutrition.item.carbs + acc.carbs,
+                }
+            },
+            {
+                calories: 0,
+                protein: 0,
+                fat: 0,
+                carbs: 0,
+            },
+        );
+
+        const now = new Date()
+
+        const nutritionsThisWeek = await NutritionModel.find({
+            createdBy: userId,
+            date: {
+                $gte: startOfWeek(now),
+                $lte: endOfWeek(now)
+            }
+        }).populate('item')
+
+        return NextResponse.json(
+            {nutritionsToday, totalMacros, nutritionsThisWeek},
+            {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+            },
+        );
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json(
+            {message: "Error getting mesocycles"},
+            {status: 500},
+        );
+    }
 }
