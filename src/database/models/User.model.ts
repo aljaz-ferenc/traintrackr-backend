@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
 	tdee: {
 		type: Number
 	},
+	units: {
+		type: String,
+		enum: ['imperial', 'metric']
+	},
 	activeMesocycle: {
 		mesocycle: {
 			type: mongoose.SchemaTypes.ObjectId,
