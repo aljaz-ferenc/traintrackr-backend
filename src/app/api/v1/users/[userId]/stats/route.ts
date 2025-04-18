@@ -11,6 +11,8 @@ import {
 } from "@/utils/utils";
 import type { Range } from "@/types/types";
 import MesocycleModel, { IMesocycle } from "@/database/models/Mesocycle.model";
+import NutritionModel from "@/database/models/Nutrition.model";
+import {endOfToday, isSameDay, startOfWeek} from "date-fns";
 
 export async function OPTIONS() {
 	return NextResponse.json(
@@ -33,7 +35,7 @@ export async function PATCH(
 	try {
 		const { userId } = await params;
 		const payload = await request.json();
-		console.log(payload);
+		// console.log(payload);
 		await connectToDatabase();
 		const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(
 			userId,
@@ -77,7 +79,7 @@ export async function GET(
 		await connectToDatabase();
 
 		const user: IUser | null = await UserModel.findById(userId).lean();
-		console.log(user);
+
 		if (!user) {
 			console.log("User not found");
 			return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -97,6 +99,16 @@ export async function GET(
 		);
 
 		const {total, completed} = await getCompletedWorkoutsRatio(user)
+
+		const nutritions = await NutritionModel.find({
+			createdBy: userId,
+			date: {
+				$gte: startOfWeek(new Date()),
+				$lte: endOfToday()
+			}
+		})
+
+		console.log(nutritions.filter(n => !isSameDay(new Date(n.date), new Date())))
 
 		return NextResponse.json(
 			{
