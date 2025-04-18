@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema({
 	lastWorkout: {
 		type: Date,
 	},
+	tdee: {
+		type: Number
+	},
 	activeMesocycle: {
 		mesocycle: {
 			type: mongoose.SchemaTypes.ObjectId,

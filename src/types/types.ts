@@ -1,1 +1,1 @@
-export type Range = 'week' |'month' | 'year'
+export type Range = 'today' | 'week' |'month' | 'year'
