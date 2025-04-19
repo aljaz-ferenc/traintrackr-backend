@@ -12,7 +12,7 @@ import {
 import type { Range } from "@/types/types";
 import MesocycleModel, { IMesocycle } from "@/database/models/Mesocycle.model";
 import NutritionModel from "@/database/models/Nutrition.model";
-import {endOfToday, isSameDay, startOfWeek} from "date-fns";
+import {endOfToday, endOfWeek, getDay, isAfter, isBefore, isSameDay, startOfWeek} from "date-fns";
 
 export async function OPTIONS() {
 	return NextResponse.json(
@@ -108,7 +108,13 @@ export async function GET(
 			}
 		})
 
-		console.log(nutritions.filter(n => !isSameDay(new Date(n.date), new Date())))
+		const nutritionsThisWeek = await NutritionModel.find({
+			createdBy: new mongoose.Types.ObjectId(userId),
+			date: {
+				$gte: startOfWeek(new Date()),
+				$lte: endOfWeek(new Date())
+			}
+		}).populate('item').lean()
 
 		return NextResponse.json(
 			{
@@ -121,7 +127,7 @@ export async function GET(
 					macrosToday,
 					caloriesGoal: user.tdee,
 					caloriesLeftToday: user.tdee - macrosToday.calories,
-					averageDailyCaloriesThisWeek: 1, //TODO
+					averageDailyCaloriesThisWeek: Math.round(calcMacros(nutritionsThisWeek).calories / (getDay(new Date()) + 1)),
                     tdee: user.tdee || null
 				},
 				weight: {
