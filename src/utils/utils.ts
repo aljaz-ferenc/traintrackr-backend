@@ -6,12 +6,12 @@ import UserModel, { type IUser } from "@/database/models/User.model";
 import {
 	addDays,
 	differenceInDays,
-	endOfToday,
+	endOfToday, endOfWeek,
 	getDay,
 	isAfter,
 	isBefore,
 	startOfDay,
-	startOfToday,
+	startOfToday, startOfWeek,
 	subDays,
 	subMonths,
 	subWeeks,
@@ -235,4 +235,37 @@ export async function getWeightChangeInRange(user: IUser, range: Range){
 	const lastWeight = weights.pop()
 
 	return lastWeight.value - firstWeight.value
+}
+
+export async function getWeightChangeBetweenDates(userId: IUser['_id'], startDate: Date, endDate: Date): Promise<{first: number, last: number, change: number}>{
+	const weightChangeData = await UserModel.aggregate([
+		{ $match: { _id: new mongoose.Types.ObjectId(userId) } },
+		{ $unwind: "$stats.weight" },
+		{
+			$match: {
+				"stats.weight.date": {
+					$gte: startDate,
+					$lte: endDate,
+				},
+			},
+		},
+		{ $sort: { "stats.weight.date": 1 } },
+		{
+			$group: {
+				_id: "$_id",
+				first: { $first: "$stats.weight.value" },
+				last: { $last: "$stats.weight.value" },
+			},
+		},
+		{
+			$project: {
+				_id: 0,
+				first: "$first",
+				last: "$last",
+				change: { $subtract: ["$last", "$first"] },
+			},
+		},
+	]);
+
+	return weightChangeData[0]
 }
