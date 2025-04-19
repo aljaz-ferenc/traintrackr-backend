@@ -27,7 +27,7 @@ import WorkoutLogModel, {
 } from "@/database/models/WorkoutLog.model";
 import NutritionModel, { type INutrition } from "@/database/models/Nutrition.model";
 
-export function calcActiveMesoProgress(user: IUser) {
+export function calcActiveMesoProgress(user: any) {
 	if (!user.activeMesocycle) return null;
 
 	const { startDate, endDate } = user.activeMesocycle;
@@ -47,7 +47,7 @@ export function calcActiveMesoProgress(user: IUser) {
 	return Math.min(progress, 100);
 }
 
-export async function getWeightsInRange(user: IUser, range: Range) {
+export async function getWeightsInRange(user: any, range: Range) {
 	if (!user.stats?.weight) return null;
 
 	const toDate = endOfToday();
@@ -86,11 +86,11 @@ export async function getWeightsInRange(user: IUser, range: Range) {
 	]);
 }
 
-export async function getCompletedWorkoutsRatio(user: IUser): {total: number, completed: number} {
+export async function getCompletedWorkoutsRatio(user: any) {
 	const activeMeso: IMesocycle | null = await MesocycleModel.findById(
 		user.activeMesocycle?.mesocycle,
 	);
-	if (!activeMeso?.duration || !activeMeso.workouts?.length) return null;
+	if (!activeMeso?.duration || !activeMeso.workouts?.length) return {total: null, completed: null};
 
 	const completedWorkouts = await WorkoutLogModel.aggregate([
 		{ $match: { mesoId: activeMeso._id } },
@@ -160,9 +160,9 @@ type Macros = {
 	carbs: number;
 };
 
-export function calcMacros(nutritions: INutrition[]) {
+export function calcMacros(nutritions: any) {
 	return nutritions.reduce(
-		(total, current) => {
+		(total: any, current: any) => {
 			return {
 				calories: Math.round(
 					total.calories + (current.amount * current.item.calories) / 100,
@@ -209,7 +209,7 @@ export function getStartOfRange(range: Range) {
 	return startDate;
 }
 
-export async function getNutritionsByRange(userId: IUser["_id"], range: Range) {
+export async function getNutritionsByRange(userId: any, range: Range) {
 	const startDate = getStartOfRange(range);
 
 	const nutritionsByRange = await NutritionModel.find({
@@ -223,11 +223,11 @@ export async function getNutritionsByRange(userId: IUser["_id"], range: Range) {
 	return nutritionsByRange;
 }
 
-export async function getWeightChangeInRange(user: IUser, range: Range){
+export async function getWeightChangeInRange(user: any, range: Range){
 	const startDate = getStartOfRange(range)
 	const endDate = endOfToday()
 
-	const weights = user.stats.weight.filter(w =>
+	const weights = user.stats.weight.filter((w: any) =>
 		isAfter(new Date(w.date), startDate) &&
 		isBefore(new Date(w.date), endDate)
 	) || []
@@ -237,7 +237,7 @@ export async function getWeightChangeInRange(user: IUser, range: Range){
 	return lastWeight.value - firstWeight.value
 }
 
-export async function getWeightChangeBetweenDates(userId: IUser['_id'], startDate: Date, endDate: Date): Promise<{first: number, last: number, change: number}>{
+export async function getWeightChangeBetweenDates(userId: any, startDate: Date, endDate: Date): Promise<{first: number, last: number, change: number}>{
 	const weightChangeData = await UserModel.aggregate([
 		{ $match: { _id: new mongoose.Types.ObjectId(userId) } },
 		{ $unwind: "$stats.weight" },

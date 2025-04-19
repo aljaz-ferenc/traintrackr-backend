@@ -74,11 +74,10 @@ export async function GET(
 ) {
     try {
         const {userId} = await params;
-        console.log(userId);
 
         await connectToDatabase();
 
-        const user: IUser | null = await UserModel.findById(userId).lean();
+        const user: any = await UserModel.findById(userId).lean();
 
         if (!user) {
             console.log("User not found");
@@ -114,7 +113,7 @@ export async function GET(
                 $gte: startOfWeek(new Date()),
                 $lte: endOfWeek(new Date())
             }
-        }).populate('item').lean()
+        }).populate('item')
 
 
         return NextResponse.json(
@@ -152,7 +151,7 @@ export async function GET(
                 workouts: {
                     completed,
                     total,
-                    mesoProgress: !activeMeso ? null : Math.round(completed / total * 100),
+                    mesoProgress: !activeMeso ? null : Math.round(completed / (total || 0) * 100),
                     statuses: await getStatuses(user, activeMeso)
                 },
             },

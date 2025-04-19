@@ -85,4 +85,4 @@ const userSchema = new mongoose.Schema({
 
 const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
 export default UserModel;
-export type IUser = InferSchemaType<typeof userSchema> & { _id: Types.ObjectId };
+export type IUser = InferSchemaType<typeof userSchema>;
