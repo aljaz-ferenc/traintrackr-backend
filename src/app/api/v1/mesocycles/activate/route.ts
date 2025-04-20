@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
         const updatedUser = await UserModel.findByIdAndUpdate(
             userId,
-            {activeMesocycle},
+            {activeMesocycle, lastWorkout:null},
             {new: true},
         );
 
@@ -40,10 +40,9 @@ export async function POST(request: NextRequest) {
                 {status: 400},
             );
         }
-        //
-        // // Extract populated activeMesocycle
+
         const activeMeso = updatedUser.activeMesocycle.mesocycle;
-        //
+
         const createEmptyWeeks = (length: number) => new Array(length).fill({});
         const initialWorkoutLog = {
             mesoTitle: activeMeso.title,
