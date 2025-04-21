@@ -141,11 +141,11 @@ export async function GET(
                         : (await getWeightChangeBetweenDates(
                             new mongoose.Types.ObjectId(userId),
                             new Date(user.activeMesocycle.startDate),
-                            new Date(user.activeMesocycle.endDate))).first,
+                            new Date(user.activeMesocycle.endDate)))?.first,
                     changeThisMeso: !activeMeso ? null : (await getWeightChangeBetweenDates(
                         new mongoose.Types.ObjectId(userId),
                         new Date(user.activeMesocycle.startDate),
-                        new Date(user.activeMesocycle.endDate))).change,
+                        new Date(user.activeMesocycle.endDate)))?.change,
                     averageWeeklyChangeThisMeso: !activeMeso ? null : 1, //TODO
                     weightsInRange: await getWeightsInRange(user, range)
                 },
