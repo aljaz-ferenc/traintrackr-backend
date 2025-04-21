@@ -10,9 +10,9 @@ import {
     getWeightsInRange,
 } from "@/utils/utils";
 import type {Range} from "@/types/types";
-import MesocycleModel, {IMesocycle} from "@/database/models/Mesocycle.model";
+import MesocycleModel from "@/database/models/Mesocycle.model";
 import NutritionModel from "@/database/models/Nutrition.model";
-import {endOfToday, endOfWeek, getDay, isAfter, isBefore, isSameDay, startOfWeek} from "date-fns";
+import {endOfToday, endOfWeek, getDay, startOfWeek} from "date-fns";
 
 export async function OPTIONS() {
     return NextResponse.json(
@@ -77,6 +77,7 @@ export async function GET(
 
         await connectToDatabase();
 
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         const user: any = await UserModel.findById(userId).lean();
 
         if (!user) {
@@ -152,7 +153,7 @@ export async function GET(
                     completed,
                     total,
                     mesoProgress: !activeMeso ? null : Math.round(completed / (total || 0) * 100),
-                    statuses: await getStatuses(user, activeMeso)
+                    statuses: activeMeso ? await getStatuses(user, activeMeso) : null
                 },
             },
             {

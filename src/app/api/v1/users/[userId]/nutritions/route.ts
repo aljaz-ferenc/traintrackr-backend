@@ -2,7 +2,7 @@ import '@/database/models/FoodItem.model'
 import NutritionModel, {INutrition} from "@/database/models/Nutrition.model";
 import {connectToDatabase} from "@/database/mongoose";
 import {type NextRequest, NextResponse} from "next/server";
-import {endOfToday, endOfWeek, isToday, startOfToday, startOfWeek} from "date-fns";
+import {addDays, addHours, endOfToday, endOfWeek, startOfDay, startOfToday, startOfWeek} from "date-fns";
 
 export async function OPTIONS() {
     return NextResponse.json(
@@ -47,13 +47,13 @@ export async function GET(
             },
         );
 
-        const now = new Date()
+        const now = addHours(new Date(), 2)
 
         const nutritionsThisWeek = await NutritionModel.find({
             createdBy: userId,
             date: {
-                $gte: startOfWeek(now),
-                $lte: endOfWeek(now)
+                $gte: addHours(startOfDay(addDays(startOfWeek(now), 1)), 2),
+                $lte: addHours(addDays(endOfWeek(now), 1), 2)
             }
         }).populate('item')
 

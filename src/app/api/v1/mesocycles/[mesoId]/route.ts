@@ -50,7 +50,7 @@ export async function GET(
 		const mesocycle = await MesocycleModel.findById(mesoId);
 
 		return NextResponse.json(
-			{ mesocycle },
+			mesocycle ,
 			{
 				headers: {
 					"Access-Control-Allow-Origin": "*",
