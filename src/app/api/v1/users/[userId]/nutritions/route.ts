@@ -32,20 +32,22 @@ export async function GET(
 
         const totalMacros = nutritionsToday.reduce(
             (acc, nutrition) => {
+
                 return {
-                    calories: nutrition.item.calories + acc.calories,
-                    protein: nutrition.item.protein + acc.protein,
-                    fat: nutrition.item.fat + acc.fat,
-                    carbs: nutrition.item.carbs + acc.carbs,
-                }
+                    calories: Math.round(acc.calories + nutrition.item.calories * nutrition.amount / 100),
+                    protein: Math.round(acc.protein + nutrition.item.protein * nutrition.amount / 100),
+                    fat: Math.round(acc.fat + nutrition.item.fat * nutrition.amount / 100),
+                    carbs: Math.round(acc.carbs + nutrition.item.carbs * nutrition.amount / 100),
+                };
             },
             {
                 calories: 0,
                 protein: 0,
                 fat: 0,
                 carbs: 0,
-            },
+            }
         );
+
 
         const now = addHours(new Date(), 2)
 
