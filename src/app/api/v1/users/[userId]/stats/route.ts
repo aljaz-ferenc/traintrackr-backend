@@ -119,10 +119,6 @@ export async function GET(
 
         return NextResponse.json(
             {
-                // weight: await getWeightsByRange(user, range),
-                // activeMesoProgress: calcActiveMesoProgress(user),
-                // completedWorkoutsRatio: await getCompletedWorkoutsRatio(user),
-                // workoutStatuses: await getStatuses(user, activeMeso)
                 nutrition: {
                     caloriesToday: macrosToday.calories,
                     macrosToday,
