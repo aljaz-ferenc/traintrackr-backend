@@ -25,9 +25,10 @@ export async function GET(
     try {
         const {userId} = await params;
         await connectToDatabase();
+
         const nutritionsToday = await NutritionModel.find({
             createdBy: userId,
-            date: {$gte: startOfToday(), $lte: endOfToday()}
+            createdAt: {$gte: startOfToday(), $lte: endOfToday()}
         }).populate('item');
 
         const totalMacros = nutritionsToday.reduce(
@@ -53,9 +54,9 @@ export async function GET(
 
         const nutritionsThisWeek = await NutritionModel.find({
             createdBy: userId,
-            date: {
-                $gte: addHours(startOfDay(addDays(startOfWeek(now), 1)), 2),
-                $lte: addHours(addDays(endOfWeek(now), 1), 2)
+            createdAt: {
+                $gte: startOfWeek(now, {weekStartsOn: 1}),
+                $lte: endOfWeek(now, {weekStartsOn: 1})
             }
         }).populate('item')
 

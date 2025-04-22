@@ -87,7 +87,6 @@ const workoutLogSchema = new mongoose.Schema({
 	},
 	weeks: {
 		type: [logWeekSchema],
-		// required: ['required']
 	},
 });
 

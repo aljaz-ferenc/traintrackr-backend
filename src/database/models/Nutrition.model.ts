@@ -11,15 +11,13 @@ const nutritionSchema = new mongoose.Schema({
 		ref: "User",
 		required: [true, "required"],
 	},
-	date: {
-		type: Date,
-		required: [true, "required"],
-	},
 	item: {
 		type: mongoose.SchemaTypes.ObjectId,
 		ref: 'FoodItem',
 		required: [true, "required"],
 	},
+}, {
+	timestamps: true
 });
 
 const NutritionModel =

@@ -35,7 +35,7 @@ export async function PATCH(
     try {
         const {userId} = await params;
         const payload = await request.json();
-        // console.log(payload);
+
         await connectToDatabase();
         const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(
             userId,
@@ -180,11 +180,9 @@ export async function POST(
     try {
         const userStats = await request.json();
         const {userId} = await params;
-        console.log(userStats);
 
         await connectToDatabase();
         const user = await UserModel.findById(userId);
-        console.log(user);
 
         if (userStats.weight) {
             user.stats.weight.push({value: userStats.weight, date: new Date()});
