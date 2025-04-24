@@ -108,14 +108,17 @@ export async function GET(
             }
         })
 
+        const now = new Date()
+
         const nutritionsThisWeek = await NutritionModel.find({
-            createdBy: new mongoose.Types.ObjectId(userId),
-            date: {
-                $gte: startOfWeek(new Date()),
-                $lte: endOfWeek(new Date())
+            createdBy: userId,
+            createdAt: {
+                $gte: startOfWeek(now, {weekStartsOn: 1}),
+                $lte: endOfWeek(now, {weekStartsOn: 1})
             }
         }).populate('item')
 
+        const daysWithNutritions = new Set(nutritionsThisWeek.map(nutrition => getDay(nutrition.createdAt)))
 
         return NextResponse.json(
             {
@@ -124,7 +127,7 @@ export async function GET(
                     macrosToday,
                     caloriesGoal: user.tdee,
                     caloriesLeftToday: user.tdee - macrosToday.calories,
-                    averageDailyCaloriesThisWeek: Math.round(calcMacros(nutritionsThisWeek).calories / (getDay(new Date()) + 1)),
+                    averageDailyCaloriesThisWeek: Math.round(calcMacros(nutritionsThisWeek).calories / daysWithNutritions.size),
                     tdee: user.tdee || null
                 },
                 weight: {

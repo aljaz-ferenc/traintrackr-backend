@@ -182,31 +182,24 @@ export function calcMacros(nutritions: any) {
 
 export function getStartOfRange(range: Range) {
 	const today = startOfToday();
-	let startDate: Date;
 
 	switch (range) {
 		case "today": {
-			startDate = today;
-			break;
+			return today;
 		}
 		case "week": {
-			startDate = subWeeks(today, 1);
-			break;
+			return subWeeks(today, 1);
 		}
 		case "month": {
-			startDate = subMonths(today, 1);
-			break;
+			return subMonths(today, 1);
 		}
 		case "year": {
-			startDate = subYears(today, 1);
-			break;
+			return subYears(today, 1);
 		}
 		default: {
-			startDate = subWeeks(today, 1);
+			return subWeeks(today, 1);
 		}
 	}
-
-	return startDate;
 }
 
 export async function getNutritionsByRange(userId: any, range: Range) {
@@ -214,8 +207,8 @@ export async function getNutritionsByRange(userId: any, range: Range) {
 
 	const nutritionsByRange = await NutritionModel.find({
 		createdBy: userId,
-		date: {
-			$gte: startOfDay(startDate),
+		createdAt: {
+			$gte: startDate,
 			$lte: endOfToday(),
 		},
 	}).populate("item");

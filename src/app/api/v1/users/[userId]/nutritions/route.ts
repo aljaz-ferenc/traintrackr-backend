@@ -49,8 +49,7 @@ export async function GET(
             }
         );
 
-
-        const now = addHours(new Date(), 2)
+        const now = new Date()
 
         const nutritionsThisWeek = await NutritionModel.find({
             createdBy: userId,
