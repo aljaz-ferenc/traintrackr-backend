@@ -125,10 +125,10 @@ export async function GET(
                 nutrition: {
                     caloriesToday: macrosToday.calories,
                     macrosToday,
-                    caloriesGoal: user.tdee,
-                    caloriesLeftToday: user.tdee - macrosToday.calories,
+                    caloriesGoal: user.stats.tdee,
+                    caloriesLeftToday: user.stats.tdee - macrosToday.calories,
                     averageDailyCaloriesThisWeek: Math.round(calcMacros(nutritionsThisWeek).calories / daysWithNutritions.size),
-                    tdee: user.tdee || null
+                    tdee: user.stats.tdee
                 },
                 weight: {
                     current: user.stats.weight[user.stats.weight.length - 1],

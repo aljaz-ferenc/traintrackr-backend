@@ -44,9 +44,7 @@ const userSchema = new mongoose.Schema({
 	lastWorkout: {
 		type: Date,
 	},
-	tdee: {
-		type: Number
-	},
+
 	units: {
 		type: String,
 		enum: ['imperial', 'metric']
@@ -79,6 +77,13 @@ const userSchema = new mongoose.Schema({
 		},
 		dob: {
 			type: Date
+		},
+		tdee: {
+			type: Number
+		},
+		activityLevel: {
+			type: String,
+			enum: ['sedentary', 'light', 'moderate', 'veryActive', 'extraActive']
 		}
 	},
 });
