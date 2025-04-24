@@ -2,7 +2,17 @@ import '@/database/models/FoodItem.model'
 import NutritionModel, {INutrition} from "@/database/models/Nutrition.model";
 import {connectToDatabase} from "@/database/mongoose";
 import {type NextRequest, NextResponse} from "next/server";
-import {addDays, addHours, endOfToday, endOfWeek, startOfDay, startOfToday, startOfWeek} from "date-fns";
+import {
+    addDays,
+    addHours,
+    endOfDay,
+    endOfToday,
+    endOfWeek,
+    startOfDay,
+    startOfToday,
+    startOfWeek,
+    subDays
+} from "date-fns";
 
 export async function OPTIONS() {
     return NextResponse.json(
@@ -24,14 +34,24 @@ export async function GET(
 ) {
     try {
         const {userId} = await params;
+        const searchParams = request.nextUrl.searchParams
         await connectToDatabase();
 
-        const nutritionsToday = await NutritionModel.find({
+        const dateString = searchParams.get('date') as unknown
+        let date: Date
+
+        if(typeof dateString === 'string'){
+            date = new Date(dateString)
+        }else{
+            date = new Date()
+        }
+
+        const nutritions = await NutritionModel.find({
             createdBy: userId,
-            createdAt: {$gte: startOfToday(), $lte: endOfToday()}
+            createdAt: {$gte: startOfDay(new Date(date)), $lte: endOfDay(new Date(date))}
         }).populate('item');
 
-        const totalMacros = nutritionsToday.reduce(
+        const totalMacros = nutritions.reduce(
             (acc, nutrition) => {
 
                 return {
@@ -49,18 +69,8 @@ export async function GET(
             }
         );
 
-        const now = new Date()
-
-        const nutritionsThisWeek = await NutritionModel.find({
-            createdBy: userId,
-            createdAt: {
-                $gte: startOfWeek(now, {weekStartsOn: 1}),
-                $lte: endOfWeek(now, {weekStartsOn: 1})
-            }
-        }).populate('item')
-
         return NextResponse.json(
-            {nutritionsToday, totalMacros, nutritionsThisWeek},
+            {nutritions, totalMacros},
             {
                 headers: {
                     "Access-Control-Allow-Origin": "*",
