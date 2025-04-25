@@ -18,10 +18,10 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
 	try {
-		const nutrition = await request.json();
-		console.log(nutrition);
+		const {nutrition, date} = await request.json();
 		await connectToDatabase();
 		nutrition.item = nutrition.item._id
+		nutrition.createdAt = date
 		const newNutrition = await NutritionModel.create(nutrition);
 
 		return NextResponse.json(newNutrition, {

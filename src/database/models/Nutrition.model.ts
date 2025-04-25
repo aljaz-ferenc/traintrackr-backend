@@ -16,8 +16,6 @@ const nutritionSchema = new mongoose.Schema({
 		ref: 'FoodItem',
 		required: [true, "required"],
 	},
-}, {
-	timestamps: true
 });
 
 const NutritionModel =
