@@ -16,6 +16,10 @@ const nutritionSchema = new mongoose.Schema({
 		ref: 'FoodItem',
 		required: [true, "required"],
 	},
+	createdAt: {
+		type: Date,
+		required: [true, "required"],
+	}
 });
 
 const NutritionModel =
