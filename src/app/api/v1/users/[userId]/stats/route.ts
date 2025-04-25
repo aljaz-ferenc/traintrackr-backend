@@ -125,7 +125,7 @@ export async function GET(
                 nutrition: {
                     caloriesToday: macrosToday.calories,
                     macrosToday,
-                    caloriesGoal: user.stats.tdee,
+                    caloriesGoal: activeMeso ? activeMeso.calorieGoal : user.calorieGoal ? user.calorieGoal : user.stats.tdee,
                     caloriesLeftToday: user.stats.tdee - macrosToday.calories,
                     averageDailyCaloriesThisWeek: Math.round(calcMacros(nutritionsThisWeek).calories / daysWithNutritions.size),
                     tdee: user.stats.tdee,

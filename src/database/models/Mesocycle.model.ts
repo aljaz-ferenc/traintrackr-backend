@@ -18,6 +18,10 @@ const mesocycleSchema = new mongoose.Schema({
 		enum: ["synchronous", "asynchronous"],
 		required: ["required"],
 	},
+	calorieGoal: {
+		type: Number,
+		required: ["required"],
+	},
 	workouts: {
 		type: Array,
 		required: ["required"],

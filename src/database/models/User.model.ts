@@ -44,7 +44,9 @@ const userSchema = new mongoose.Schema({
 	lastWorkout: {
 		type: Date,
 	},
-
+	calorieGoal: {
+		type: Number
+	},
 	units: {
 		type: String,
 		enum: ['imperial', 'metric']
