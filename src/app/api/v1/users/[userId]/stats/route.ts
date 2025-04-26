@@ -119,14 +119,14 @@ export async function GET(
         }).populate('item')
 
         const daysWithNutritions = new Set(nutritionsThisWeek.map(nutrition => getDay(nutrition.createdAt)))
-
+        const caloriesGoal = activeMeso ? activeMeso.calorieGoal : user.calorieGoal ? user.calorieGoal : user.stats.tdee
         return NextResponse.json(
             {
                 nutrition: {
                     caloriesToday: macrosToday.calories,
                     macrosToday,
-                    caloriesGoal: activeMeso ? activeMeso.calorieGoal : user.calorieGoal ? user.calorieGoal : user.stats.tdee,
-                    caloriesLeftToday: user.stats.tdee - macrosToday.calories,
+                    caloriesGoal,
+                    caloriesLeftToday: caloriesGoal - macrosToday.calories,
                     averageDailyCaloriesThisWeek: Math.round(calcMacros(nutritionsThisWeek).calories / daysWithNutritions.size),
                     tdee: user.stats.tdee,
                     nutritionsThisWeek
