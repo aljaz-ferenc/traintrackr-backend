@@ -155,6 +155,7 @@ export async function GET(
                     mesoProgress: !activeMeso ? null : Math.round(completed / (total || 0) * 100),
                     statuses: activeMeso ? await getStatuses(user, activeMeso) : null
                 },
+                bodyParts: user.stats.bodyParts
             },
             {
                 status: 201,

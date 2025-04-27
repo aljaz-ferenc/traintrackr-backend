@@ -1,33 +1,18 @@
 import mongoose, {type InferSchemaType, type Types} from "mongoose";
 
-const userWeightSchema = new mongoose.Schema({
-	value: {
-		type: Number,
-	},
-	date: {
-		type: Date,
-	},
-	// units: {
-	//     type: String,
-	//     enum: ['kg', 'lb'],
-	//     default: 'kg'
-	// }
-});
-
-const userStatsSchema = new mongoose.Schema({
-	weight: {
-		type: userWeightSchema,
-	},
-});
+const measurementSchema = new mongoose.Schema({
+	value: Number,
+	date: Date
+}, {_id: false})
 
 const userSchema = new mongoose.Schema({
 	clerkId: {
 		type: String,
-		required: ["required"],
+		required: [true, "Clerk id is required"],
 	},
 	email: {
 		type: String,
-		required: ["required"],
+		required: [true, "email is required"],
 	},
 	username: {
 		type: String,
@@ -86,7 +71,23 @@ const userSchema = new mongoose.Schema({
 		activityLevel: {
 			type: String,
 			enum: ['sedentary', 'light', 'moderate', 'veryActive', 'extraActive']
-		}
+		},
+		bodyParts: {
+			neck: {type: [measurementSchema], default: []},
+			shoulders: {type: [measurementSchema], default: []},
+			chest: {type: [measurementSchema], default: []},
+			belly: {type: [measurementSchema], default: []},
+			glutes: {type: [measurementSchema], default: []},
+			leftCalf: {type: [measurementSchema], default: []},
+			rightCalf: {type: [measurementSchema], default: []},
+			leftLeg: {type: [measurementSchema], default: []},
+			rightLeg: {type: [measurementSchema], default: []},
+			leftArm: {type: [measurementSchema], default: []},
+			rightArm: {type: [measurementSchema], default: []},
+			leftForearm: {type: [measurementSchema], default: []},
+			rightForearm: {type: [measurementSchema], default: []},
+		},
+		default: {}
 	},
 });
 
