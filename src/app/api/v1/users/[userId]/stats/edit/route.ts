@@ -37,6 +37,12 @@ export async function PATCH(
             user.save()
         }
 
+        if(payload.bodyPart){
+            const {name, value} = payload.bodyPart
+            user.stats.bodyParts[name].push({value, date: new Date()})
+            user.save()
+        }
+
         return NextResponse.json(null, {
             status: 201,
             headers: {
