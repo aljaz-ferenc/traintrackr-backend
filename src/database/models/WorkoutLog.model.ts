@@ -17,7 +17,7 @@ const setSchema = new mongoose.Schema({
 
 const exerciseWithSetsSchema = new mongoose.Schema({
 	id: {
-		type: Number, // STRING???????
+		type: String,
 	},
 	name: {
 		type: String,

@@ -24,9 +24,6 @@ export async function PUT(request: Request) {
 
 		const body = await request.json();
 		const { weekNumber, workout, mesoId, userId } = body;
-		console.log("USER_ID: ", userId);
-		console.log("MESO_ID: ", mesoId);
-		console.log("WEEK_NUMBER: ", weekNumber);
 
 		const workoutLog = await WorkoutLogModel.findOne({ mesoId });
 
