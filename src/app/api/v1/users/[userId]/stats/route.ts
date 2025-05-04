@@ -118,6 +118,8 @@ export async function GET(
             }
         }).populate('item')
 
+        const weightsInRange = await getWeightsInRange(user, range)
+
         const daysWithNutritions = new Set(nutritionsThisWeek.map(nutrition => getDay(nutrition.createdAt)))
         const caloriesGoal = activeMeso ? activeMeso.calorieGoal : user.calorieGoal ? user.calorieGoal : user.stats.tdee
         return NextResponse.json(
@@ -132,8 +134,8 @@ export async function GET(
                     nutritionsThisWeek
                 },
                 weight: {
-                    current: user.stats.weight[user.stats.weight.length - 1],
-                    starting: user.stats.weight[0],
+                    current: weightsInRange?.[weightsInRange.length - 1],
+                    starting: weightsInRange?.[0],
                     changeInRange: await getWeightChangeInRange(user, range),
                     averageWeeklyChangeInRange: 1,//TODO
                     startingThisMeso: !activeMeso
@@ -147,7 +149,7 @@ export async function GET(
                         new Date(user.activeMesocycle.startDate),
                         new Date(user.activeMesocycle.endDate)))?.change,
                     averageWeeklyChangeThisMeso: !activeMeso ? null : 1, //TODO
-                    weightsInRange: await getWeightsInRange(user, range)
+                    weightsInRange: weightsInRange
                 },
                 workouts: {
                     completed,
