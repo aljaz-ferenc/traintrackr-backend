@@ -20,7 +20,6 @@ export async function POST(request: NextRequest) {
 	try {
 		const foodItem = await request.json();
 		await connectToDatabase();
-		console.log(foodItem);
 		const newFoodItem = await FoodItemModel.create(foodItem);
 
 		return NextResponse.json(

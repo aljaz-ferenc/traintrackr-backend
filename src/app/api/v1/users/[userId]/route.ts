@@ -23,9 +23,6 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
         const payload = await request.json()
         await connectToDatabase()
 
-        console.log(userId)
-        console.log(payload)
-
         const user = await UserModel.findByIdAndUpdate(userId, payload, {new: true})
 
         return NextResponse.json(user, {

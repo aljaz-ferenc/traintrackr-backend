@@ -1,6 +1,7 @@
 import {type NextRequest, NextResponse} from "next/server";
 import {connectToDatabase} from "@/database/mongoose";
 import UserModel, {type IUser} from "@/database/models/User.model";
+import {isSameDay} from "date-fns";
 
 export async function OPTIONS() {
     return NextResponse.json(
@@ -31,13 +32,24 @@ export async function PATCH(
         }
 
         if (payload.weight) {
-            const oldWeight = user.stats.weight.pop()
-            const newWeight = {...oldWeight, date: oldWeight.date, value: payload.weight}
-            user.stats.weight.push(newWeight)
-            user.save()
+            if (payload.date) {
+                user.stats.weight.map((w: { value: number, date: Date, _id: string }) => {
+                    if (isSameDay(w.date, payload.date)) {
+                        w.value = payload.weight
+                        return w
+                    }
+                    return w
+                })
+                user.save()
+            } else {
+                const oldWeight = user.stats.weight.pop()
+                const newWeight = {...oldWeight, date: oldWeight.date, value: payload.weight}
+                user.stats.weight.push(newWeight)
+                user.save()
+            }
         }
 
-        if(payload.bodyPart){
+        if (payload.bodyPart) {
             const {name, value} = payload.bodyPart
             user.stats.bodyParts[name].push({value, date: new Date()})
             user.save()

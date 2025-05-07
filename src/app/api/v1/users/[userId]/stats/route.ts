@@ -100,14 +100,6 @@ export async function GET(
 
         const {total, completed} = await getCompletedWorkoutsRatio(user)
 
-        const nutritions = await NutritionModel.find({
-            createdBy: userId,
-            date: {
-                $gte: startOfWeek(new Date()),
-                $lte: endOfToday()
-            }
-        })
-
         const now = new Date()
 
         const nutritionsThisWeek = await NutritionModel.find({

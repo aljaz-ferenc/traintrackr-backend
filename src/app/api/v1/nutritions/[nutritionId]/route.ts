@@ -24,7 +24,6 @@ export async function DELETE(
 	try {
 		await connectToDatabase();
 		const { nutritionId } = await params;
-		console.log(nutritionId);
 		const deletedNutrition =
 			await NutritionModel.findByIdAndDelete(nutritionId);
 
@@ -48,15 +47,12 @@ export async function PATCH(
 		await connectToDatabase();
 		const payload = await request.json();
 		const { nutritionId } = await params;
-		console.log("NUTRITION: ", nutritionId);
-		console.log("PAYLOAD: ", payload);
+
 		const updatedNutrition = await NutritionModel.findByIdAndUpdate(
 			nutritionId,
 			{ amount: payload },
 			{ new: true },
 		);
-
-		console.log("UPDATED NUTRITION: ", updatedNutrition);
 
 		return NextResponse.json(updatedNutrition, {
 			headers: {

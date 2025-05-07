@@ -33,9 +33,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Extract populated activeMesocycle
 		const activeMeso = user.activeMesocycle.mesocycle;
-		console.log(activeMeso); // Ensure it's populated
 
 		// Check that duration is a valid number
 		if (Number.isNaN(activeMeso.duration) || activeMeso.duration <= 0) {
@@ -59,7 +57,6 @@ export async function POST(request: NextRequest) {
 
 		// Create the workout log
 		const log = await WorkoutLogModel.create(initialWorkoutLog);
-		console.log("Workout Log Created:", log);
 
 		return NextResponse.json(
 			{ userId, log },
