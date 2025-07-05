@@ -227,6 +227,10 @@ export async function getWeightChangeInRange(user: any, range: Range){
 	const firstWeight = weights[0]
 	const lastWeight = weights.pop()
 
+	if(!firstWeight || !lastWeight){
+		return 0
+	}
+
 	return lastWeight.value - firstWeight.value
 }
 
