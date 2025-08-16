@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/database/mongoose";
 import UserModel from "@/database/models/User.model";
 
-// Allow CORS for every request
 export async function OPTIONS() {
 	return NextResponse.json(
 		{},
