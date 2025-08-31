@@ -9,11 +9,15 @@
 		"biome": "biome lint ./src && biome format --write ./src"
 	},
 	"dependencies": {
+		"@ai-sdk/google": "^2.0.11",
 		"@clerk/nextjs": "^6.14.1",
+		"ai": "^5.0.28",
 		"date-fns": "^4.1.0",
 		"mongoose": "^8.13.2",
 		"next": "15.2.5",
-		"svix": "^1.63.1"
+		"svix": "^1.63.1",
+		"uuid": "^11.1.0",
+		"zod": "^4.1.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
